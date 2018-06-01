@@ -16,7 +16,7 @@
 #define MAX_REGEX_MATCHES 100
 
 void _log( char *, char *, ... ) __attribute__ ((format (gnu_printf, 2, 3 )));
-char * regexp_replace( char *, char *, char *, char * );
+char * regexp_replace( char *, char *, char *, bool );
 char * regexp_replace( char *, char *, char * );
 
 void _log( char * message, char * log_level, ... )
@@ -81,7 +81,7 @@ char * regexp_replace( char * string, char * pattern, char * replace )
     return regexp_replace( string, pattern, replace, "" );
 }
 
-char * regexp_replace( char * string, char * pattern, char * replace, char * multiple )
+char * regexp_replace( char * string, char * pattern, char * replace, bool multiple )
 {
     regex_t regex;
     regmatch_t matches[MAX_REGEX_GROUPS + 1 ];
