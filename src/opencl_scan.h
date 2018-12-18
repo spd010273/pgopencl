@@ -27,4 +27,5 @@
 #include "utils/ruleutils.h"
 #include "utils/spccache.h"
 
+static bool enable_opencl_scan;
 #endif // OPENCL_SCAN_H

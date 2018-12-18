@@ -6,8 +6,40 @@
 #define PLATFORM_ATTRIBUTE_COUNT 5
 #define DEVICE_ATTRIBUTE_COUNT 53
 
-void pgopencl_init_devices( void );
+typedef struct {
+    cl_program *       program;         // currently executing OpenCL program
+    cl_kernel *        kernel;          // currently executing OpenCL kernel
+    cl_mem **          memory;          // Array of memory maps
+    unsigned int       num_allocations; // Number of memory mapped allocations
+    cl_command_queue * command_queue;   // OpenCL command queue handle
+    pgopencl_device *  device_handle;   // Reverse lookup for device handle
+} pgopencl_compute_handle;
+
+typedef struct {
+    cl_platform_id            platform;      // OpenCL platform handle
+    cl_device_id              device;        // OpenCL device handle
+    cl_kernel *               kernels;       // List of compatible kernels
+    pgopencl_compute_handle * device_state;  // Current device state
+    unsigned int              compute_units; // # of compute units available on this device
+    unsigned int              mem_size;      // Maximum allocatable memory
+    unsigned int              bogo_mips;     // Performance approximation
+} pgopencl_device;
+
+typedef struct {
+    pgopencl_device ** devices;
+    unsigned int       device_count;
+
+    cl_device_id **    _platform_devices;     // Matrix of devices
+    unsigned int       _num_platform_devices; // Size of above array
+    unsigned int *     _device_counts;        // Size of each _platform_devices[i]
+    cl_platform_id *  _platforms;             // Array of platforms
+    unsigned int      _platform_count;        // Size of above array
+} pgopencl_devices;
+
+void pgopencl_init_devices( pgopencl_devices ** );
 void _handle_cl_error( cl_int );
+unsigned int pgopencl_add_device( pgopencl_devices *, cl_platform_id *, cl_device_id * );
+void pgopencl_remove_device( pgopencl_devices *, cl_device_id * ); 
 
 const char * platform_attribute_names[PLATFORM_ATTRIBUTE_COUNT] = {
     "Name",
